@@ -85,10 +85,15 @@ bool HeightMapApplication::HandleStart()
 				XMFLOAT3 v0 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
 				XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
 
+				//XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
+				//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
+				//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
+				//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
+
 				XMFLOAT3 firstNormal;
-				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
-				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
-				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
+				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
 				XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&firstNormal, n);
 
@@ -99,19 +104,22 @@ bool HeightMapApplication::HandleStart()
 				XMVECTOR norm = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&secondNormal, norm);
 
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
+				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
 
-				/*if (mapIndex == 0)
+				if (mapIndex%2 == 0)
 				{
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
 					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
+				}
+				else {
+
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
 				}
 				
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, secondNormal);
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v3, MAP_COLOUR, secondNormal);
 
-				if (mapIndex = m_HeightMapWidth - 1)
+				/*if (mapIndex = m_HeightMapWidth - 1)
 				{
 					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, secondNormal);
 				}*/
@@ -124,10 +132,15 @@ bool HeightMapApplication::HandleStart()
 				XMFLOAT3 v0 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
 				XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
 
+				//XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
+				//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
+				//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
+				//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
+
 				XMFLOAT3 firstNormal;
-				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
-				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
-				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
+				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
 				XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&firstNormal, n);
 
@@ -138,11 +151,20 @@ bool HeightMapApplication::HandleStart()
 				XMVECTOR norm = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&secondNormal, norm);
 
+				if (mapIndex % 2 == 0)
+				{
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+				}
+				else {
 
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, secondNormal);
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, secondNormal);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+				}
+				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
+				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+				/*m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, secondNormal);
+				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, secondNormal);*/
 
 				//if (mapIndex == 0)
 				//{
@@ -233,15 +255,23 @@ void HeightMapApplication::HandleStop()
 
 void HeightMapApplication::HandleUpdate()
 {
-	m_rotationAngle += .01f;
+	if (this->IsKeyPressed('Q'))
+	{
+		m_rotationAngle += .01f;
+	}
 
-	if(this->IsKeyPressed('Q'))
+	if (this->IsKeyPressed('E'))
+	{
+		m_rotationAngle -= .01f;
+	}
+
+	if(this->IsKeyPressed('W'))
 	{
 		if(m_cameraZ > 20.0f)
 			m_cameraZ -= 2.0f;
 	}
 
-	if(this->IsKeyPressed('A'))
+	if(this->IsKeyPressed('S'))
 	{
 		m_cameraZ += 2.0f;
 	}
