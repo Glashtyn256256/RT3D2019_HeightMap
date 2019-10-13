@@ -62,85 +62,109 @@ bool HeightMapApplication::HandleStart()
 	m_HeightMapVtxCount = (m_HeightMapLength - 1) * m_HeightMapWidth * 2;
 	m_pMapVtxs = new Vertex_Pos3fColour4ubNormal3f[m_HeightMapVtxCount];
 
+	//XMFLOAT3* m_Normals;
+	//m_Normals = new XMFLOAT3[m_HeightMapVtxCount];
+
+	//int mapIndex = 0;
+	//for (int x = 0; x < m_HeightMapLength - 1; x++) //determines which row you are on
+	//{
+	//	for (int z = 0; z < m_HeightMapWidth - 1; z++) //-1 to make it 255
+	//	{
+	//		mapIndex = (m_HeightMapLength * x) + z;
+
+	//		XMFLOAT3 v0 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
+	//		XMFLOAT3 v1 = m_pHeightMap[mapIndex];  //Top left
+	//		XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
+	//		XMFLOAT3 v3 = m_pHeightMap[mapIndex + 1];  //Top right
+	//		
+	//		XMFLOAT3 c = XMFLOAT3(2.0f, 2.0f, 2.0f);
+	//		XMFLOAT3 s = XMFLOAT3(3.0f, 3.0f, 3.0f);
+	//		XMFLOAT3 m = XMFLOAT3(6.0f, 6.0f, 6.0f);
+	//		
+	//		XMVECTOR vCorner = XMLoadFloat3(&XMFLOAT3(c.x, c.y, c.z));
+	//		XMVECTOR vSide = XMLoadFloat3(&XMFLOAT3(s.x, s.y, s.z));
+	//		XMVECTOR vMiddle = XMLoadFloat3(&XMFLOAT3(m.x, m.y, m.z));
+
+	//		XMFLOAT3 firstNormal;
+	//		XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+	//		XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
+	//		XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
+	//		XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
+	//		XMVECTOR averageNormal;
+
+	//		XMFLOAT3 secondNormal;
+	//		XMVECTOR vector4 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
+	//		XMVECTOR vector5 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+	//		XMVECTOR vector6 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
+	//		XMVECTOR norm = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
+	//		XMStoreFloat3(&secondNormal, norm);
+
+	//		if ((x==0) || (x ==255) && (z==0 || z == 255))
+	//		{
+	//			averageNormal = XMVectorAdd(n, norm);
+	//			averageNormal = XMVectorDivide(n,vCorner);
+	//		}
+	//		if (((x == 0) && (z != 255 || z != 0)) || ((z == 0) && (x != 0 || x!= 255)))
+	//		{
+	//			averageNormal = XMVectorAdd(XMVectorAdd(n, norm), n);
+	//			averageNormal = XMVectorDivide(averageNormal, vSide);
+	//		}
+	//		else 
+	//		{
+	//			averageNormal = XMVectorAdd(XMVectorAdd(XMVectorAdd(n, norm), XMVectorAdd(n, norm)), XMVectorAdd(n, norm));
+	//			averageNormal = XMVectorDivide(averageNormal, vMiddle);
+	//		}
+	//		XMStoreFloat3(&firstNormal, averageNormal);
+	//	}
+	//}
+
 
 	int mapIndex = 0;
+	
 	for (int x = 0; x < m_HeightMapLength - 1; x++) //determines which row you are on
 	{
 		for (int z = 0; z < m_HeightMapWidth - 1; z++) //-1 to make it 255
 		{
-			//XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
-			//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
-			//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
-			//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-
-
-			
-
 			if (x%2 == 0) //Works out if the row is odd or even
 			{
 				mapIndex = (m_HeightMapLength * x) + z; 
 
-				XMFLOAT3 v1 = m_pHeightMap[mapIndex];  //Top left
-				XMFLOAT3 v3 = m_pHeightMap[mapIndex + 1];  //Top right
-				XMFLOAT3 v0 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
-				XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-
-				//XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
-				//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
-				//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
-				//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-
+				XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
+				XMFLOAT3 v1 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
+				XMFLOAT3 v2 = m_pHeightMap[mapIndex + 1];  //Top right
+				XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
+				
 				XMFLOAT3 firstNormal;
-				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
-				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
-				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
+				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
+				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
 				XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&firstNormal, n);
 
 				XMFLOAT3 secondNormal;
-				XMVECTOR vector4 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
-				XMVECTOR vector5 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
+				XMVECTOR vector4 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
+				XMVECTOR vector5 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
 				XMVECTOR vector6 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
 				XMVECTOR norm = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&secondNormal, norm);
 
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-
-				if (mapIndex%2 == 0)
-				{
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				}
-				else {
-
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				}
-				
-
-				/*if (mapIndex = m_HeightMapWidth - 1)
-				{
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, secondNormal);
-				}*/
+				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
+				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+			
 			}
 			else {
 				mapIndex = (m_HeightMapLength * x) + (m_HeightMapWidth - z) - 2; //go backwards
+				//mapIndex = (m_HeightMapLength * x) + z;
 				
-				XMFLOAT3 v1 = m_pHeightMap[mapIndex];  //Top left
-				XMFLOAT3 v3 = m_pHeightMap[mapIndex + 1];  //Top right
-				XMFLOAT3 v0 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
+				XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
+				XMFLOAT3 v1 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
 				XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-
-				//XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
-				//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
-				//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
-				//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-
+				XMFLOAT3 v3 = m_pHeightMap[mapIndex + 1];  //Top right
+				
 				XMFLOAT3 firstNormal;
-				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
-				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
-				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
+				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
+				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
+				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
 				XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&firstNormal, n);
 
@@ -151,85 +175,18 @@ bool HeightMapApplication::HandleStart()
 				XMVECTOR norm = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
 				XMStoreFloat3(&secondNormal, norm);
 
-				if (mapIndex % 2 == 0)
-				{
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-				}
-				else {
+				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
 
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-				}
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
-				/*m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, secondNormal);
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, secondNormal);*/
-
-				//if (mapIndex == 0)
-				//{
-				//	m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, secondNormal);
-				//}
-
-				//XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
-				//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
-				//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
-				//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-
-				//XMFLOAT3 v0 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
-				//XMFLOAT3 v1 = m_pHeightMap[mapIndex + 1];  //Top right
-				//XMFLOAT3 v2 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
-				//XMFLOAT3 v3 = m_pHeightMap[mapIndex];  //Top left
-				//
-				//
-
-				//XMFLOAT3 firstNormal;
-				//XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
-				//XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
-				//XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
-				//XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
-				//XMStoreFloat3(&firstNormal, n);
-
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, firstNormal);
-				//m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, firstNormal);
+				
 			}
-			
 
-			
-
-			
-			
-			
-		/*	XMFLOAT3 firstNormal;
-			XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
-			XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
-			XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
-			XMVECTOR n = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
-			XMStoreFloat3(&firstNormal, n);
-
-
-			XMFLOAT3 secondNormal;
-			XMVECTOR vector4 = XMLoadFloat3(&XMFLOAT3(v1.x,v1.y,v1.z));
-			XMVECTOR vector5 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z));
-			XMVECTOR vector6 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
-			XMVECTOR norm = XMVector3Cross(XMVectorSubtract(vector1, vector2), XMVectorSubtract(vector2, vector3));
-			XMStoreFloat3(&secondNormal, norm);*/
-
-
-			
-
-
-			
 			/*m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, XMFLOAT3(0.0f, 1.0f, 0.0f));
 			m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, XMFLOAT3(0.0f, 1.0f, 0.0f));
 			m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, XMFLOAT3(0.0f, 1.0f, 0.0f));
 			m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v2, MAP_COLOUR, XMFLOAT3(0.0f, 1.0f, 0.0f));
 			m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v3, MAP_COLOUR, XMFLOAT3(0.0f, 1.0f, 0.0f));
 			m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v, MAP_COLOUR, XMFLOAT3(0.0f, 1.0f, 0.0f));*/
-
-
-
-
 		}
 	}
 
