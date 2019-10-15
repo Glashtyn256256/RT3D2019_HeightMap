@@ -237,7 +237,7 @@ public:
 	void SetDepthStencilState(bool depthTest, bool depthWrite = DEFAULT_DEPTH_WRITE);
 
 	// Set up rasterizer state.
-	static const bool DEFAULT_BACK_FACE_CULL = false;
+	static const bool DEFAULT_BACK_FACE_CULL = true;
 	static const bool DEFAULT_WIREFRAME = false;
 	void SetRasterizerState(bool backFaceCull, bool wireframe = DEFAULT_WIREFRAME);
 
