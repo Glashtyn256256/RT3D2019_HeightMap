@@ -167,7 +167,7 @@ bool HeightMapApplication::HandleStart()
 				//XMFLOAT3 v3 = m_pHeightMap[mapIndex + m_HeightMapWidth + 1]; //bottom right;
 				//XMFLOAT3 v4 = m_pHeightMap[mapIndex + m_HeightMapWidth + m_HeightMapWidth]; //bottom bottom left
 				
-				
+				//Anti clockwise 
 				XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z));
 				XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z));
 				XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z));
@@ -196,37 +196,112 @@ bool HeightMapApplication::HandleStart()
 
 	return true;
 }
-//
-//void HeightMapApplication::ReturnAverageNormal(int mapindex, int x) 
-//{
-//	XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Top left
-//	XMFLOAT3 v1 = m_pHeightMap[mapindex + m_HeightMapWidth]; //bottom left
-//	XMFLOAT3 v2 = m_pHeightMap[mapindex + 1];  //Top right
-//	XMFLOAT3 v3 = m_pHeightMap[mapindex + m_HeightMapWidth + m_HeightMapWidth]; //bottom bottom right
-//	XMFLOAT3 v4 = m_pHeightMap[mapindex + m_HeightMapWidth + 1]; //bottom right;
-// 
-//	bool topCorners = false;
-//	bool bottomCorners = false;
-//	bool leftSide = false;
-//	bool rightSide = false;
-//	bool topSide = false;
-//	bool bottomSide = false;
-//	bool middle = false;
-//
-//	XMVECTOR vector0 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z)); //top left
-//	XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z)); // bottom left
-//	XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z)); // top right
-//	XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z)); //bottom bottom left
-//	XMVECTOR vector4 = XMLoadFloat3(&XMFLOAT3(v4.x, v4.y, v4.z)); //bottom right
-//
-//
-//	if(middle == true)
-//	{
-//		XMVECTOR oldNormal = XMVector3Cross(XMVectorSubtract(vector0, vector1), XMVectorSubtract(vector1, vector2));
-//		XMVECTOR newNormal = XMVector3Cross(XMVectorSubtract(vector1, vector3), XMVectorSubtract(vector3, vector2));
-//		
-//	}
-//}
+
+void HeightMapApplication::ReturnAverageNormal(int mapindex, int x) 
+{
+	XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
+	XMFLOAT3 v1 = m_pHeightMap[mapindex - m_HeightMapWidth]; //Middle top
+	XMFLOAT3 v2 = m_pHeightMap[mapindex + m_HeightMapWidth]; //Middle bottom
+	XMFLOAT3 v3 = m_pHeightMap[mapindex + 1];  //Middle right
+	XMFLOAT3 v4 = m_pHeightMap[mapindex - 1];  //Middle left
+	XMFLOAT3 v5 = m_pHeightMap[mapindex - m_HeightMapWidth + 1]; //Middle top right;
+	XMFLOAT3 v6 = m_pHeightMap[mapindex + m_HeightMapWidth - 1]; //Middle bottom left;
+ 
+	bool topCorners = false;
+	bool bottomCorners = false;
+	bool leftSide = false;
+	bool rightSide = false;
+	bool topSide = false;
+	bool bottomSide = false;
+	bool middle = false;
+
+	XMVECTOR vector0 = XMLoadFloat3(&XMFLOAT3(v0.x, v0.y, v0.z)); //middle
+	XMVECTOR vector1 = XMLoadFloat3(&XMFLOAT3(v1.x, v1.y, v1.z)); // middle top
+	XMVECTOR vector2 = XMLoadFloat3(&XMFLOAT3(v2.x, v2.y, v2.z)); // middle bottom
+	XMVECTOR vector3 = XMLoadFloat3(&XMFLOAT3(v3.x, v3.y, v3.z)); //middle right
+	XMVECTOR vector4 = XMLoadFloat3(&XMFLOAT3(v4.x, v4.y, v4.z)); //middle left
+	XMVECTOR vector5 = XMLoadFloat3(&XMFLOAT3(v5.x, v5.y, v5.z)); //middle top right
+	XMVECTOR vector6 = XMLoadFloat3(&XMFLOAT3(v6.x, v6.y, v6.z)); //middle bottom left
+
+	XMVECTOR faceNormalOne;
+	XMVECTOR faceNormalTwo;
+	XMVECTOR faceNormalThree;
+	XMVECTOR faceNormalFour;
+	XMVECTOR faceNormalFive;
+	XMVECTOR faceNormalSix;
+	XMVECTOR faceNormalAverage;
+
+	if(middle == true)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector5), XMVectorSubtract(vector5, vector1)); // Middle, middle top right, middle top // correct
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector3), XMVectorSubtract(vector3, vector5)); // Middle, middle right, middle top right // correct
+		faceNormalThree = XMVector3Cross(XMVectorSubtract(vector0, vector1), XMVectorSubtract(vector1, vector4)); // middle, middle top, middle left // correct
+		faceNormalFour = XMVector3Cross(XMVectorSubtract(vector0, vector2), XMVectorSubtract(vector2, vector3)); // middle, middle bottom, middle right // correct
+		faceNormalFive = XMVector3Cross(XMVectorSubtract(vector0, vector4), XMVectorSubtract(vector4, vector6)); //middle, middle left, middle bottom left // correct
+		faceNormalSix = XMVector3Cross(XMVectorSubtract(vector0, vector6), XMVectorSubtract(vector6, vector2)); // middle, middle bottom left, middle bottom //correct
+
+		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree + faceNormalFour + faceNormalFive + faceNormalSix;
+		faceNormalAverage = faceNormalAverage / 6;
+	}
+
+	if (x == 0)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector2), XMVectorSubtract(vector2, vector5)); // Middle, middle bottom, middle top right
+		faceNormalAverage = faceNormalOne;
+	}
+	if (x == 244)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector1), XMVectorSubtract(vector1, vector6)); // Middle, middle top, middle bottom left
+		faceNormalAverage = faceNormalOne;
+	}
+	if (x == 2)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector4), XMVectorSubtract(vector4, vector6)); //middle, middle left, middle bottom left
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector6), XMVectorSubtract(vector6, vector2)); //Middle, middle bottom left, middle bottom
+		faceNormalAverage = faceNormalOne + faceNormalTwo;
+		faceNormalAverage = faceNormalAverage / 2;
+
+	}
+	if (x == 4)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector3), XMVectorSubtract(vector3, vector5)); //Middle, middle right, middle top right
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector5), XMVectorSubtract(vector5, vector1)); //Middle, middle top right, middle top
+		faceNormalAverage = faceNormalOne + faceNormalTwo;
+		faceNormalAverage = faceNormalAverage / 2;
+	}
+	if (leftSide)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector5), XMVectorSubtract(vector5, vector1)); //middle, middle top right, middle top;
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector3), XMVectorSubtract(vector3, vector5)); //Middle, middle right, middle top right
+		faceNormalThree = XMVector3Cross(XMVectorSubtract(vector0, vector2), XMVectorSubtract(vector2, vector3)); //Middle, middle bottom, middle right
+		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
+		faceNormalAverage = faceNormalAverage / 3;
+	}
+	if (rightSide)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector1), XMVectorSubtract(vector1, vector4)); //middle, middle top, middle left //correct
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector4), XMVectorSubtract(vector4, vector6)); //Middle, middle left, middle bottom left //correct
+		faceNormalThree = XMVector3Cross(XMVectorSubtract(vector0, vector6), XMVectorSubtract(vector6, vector4)); //Middle, middle bottom left, middle bottom //correct
+		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
+		faceNormalAverage = faceNormalAverage / 3;
+	}
+	if (topSide)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector4), XMVectorSubtract(vector1, vector4)); //middle, middle left, middle bottom left //correct
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector4), XMVectorSubtract(vector4, vector6)); //Middle, middle bottom left, middle bottom //correct
+		faceNormalThree = XMVector3Cross(XMVectorSubtract(vector0, vector6), XMVectorSubtract(vector6, vector4)); //Middle, middle bottom left, middle bottom //correct
+		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
+		faceNormalAverage = faceNormalAverage / 3;
+	}
+	if (bottomSide)
+	{
+		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector1), XMVectorSubtract(vector1, vector4)); //middle, middle top, middle left //correct
+		faceNormalTwo = XMVector3Cross(XMVectorSubtract(vector0, vector5), XMVectorSubtract(vector5, vector1)); //Middle, middle top right, middle top
+		faceNormalThree = XMVector3Cross(XMVectorSubtract(vector0, vector3), XMVectorSubtract(vector3, vector5)); //Middle, middle right, middle top right
+		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
+		faceNormalAverage = faceNormalAverage / 3;
+	}
+}
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
