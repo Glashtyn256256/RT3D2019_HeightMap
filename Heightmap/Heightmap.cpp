@@ -68,14 +68,14 @@ bool HeightMapApplication::HandleStart()
 	int mapIndex = 0;
 	XMFLOAT3 firstNormal;
 	XMFLOAT3 secondNormal;
-	for (int x = 0; x < m_HeightMapLength - 1; x++) //determines which row you are on
+	for (int y = 0; y < m_HeightMapLength - 1; y++) //determines which row you are on
 	{
 		
-		for (int z = 0; z < m_HeightMapWidth - 1; z++) //-1 to make it 255
+		for (int x = 0; x < m_HeightMapWidth - 1; x++) //-1 to make it 255
 		{
-			if (x%2 == 0) //Works out if the row is odd or even
+			if (y%2 == 0) //Works out if the row is odd or even
 			{
-				mapIndex = (m_HeightMapLength * x) + z; 
+				mapIndex = (m_HeightMapLength * y) + x; 
 
 				XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
 				XMFLOAT3 v1 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
@@ -87,7 +87,7 @@ bool HeightMapApplication::HandleStart()
 				ReturnAverageNormal(mapIndex, averageNormalsOne);
 				ReturnAverageNormal(mapIndex + m_HeightMapWidth, averageNormalsTwo);
 
-				if (x == 0)
+				if (y == 0)
 				{
 					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, averageNormalsOne);
 					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, averageNormalsTwo);
@@ -100,7 +100,7 @@ bool HeightMapApplication::HandleStart()
 			}
 			else 
 			{
-				mapIndex = (m_HeightMapLength * x) + (m_HeightMapWidth - z) - 2; //go backwards
+				mapIndex = (m_HeightMapLength * y) + (m_HeightMapWidth - x) - 2; //go backwards
 				
 				XMFLOAT3 v0 = m_pHeightMap[mapIndex];  //Top left
 				XMFLOAT3 v1 = m_pHeightMap[mapIndex + m_HeightMapWidth]; //bottom left
@@ -128,13 +128,13 @@ bool HeightMapApplication::HandleStart()
 void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averagenormal) 
 {
 
-	int x = mapindex / m_HeightMapWidth;
-	int z = mapindex % m_HeightMapWidth;
-	if (x == 255)
+	int y = mapindex / m_HeightMapWidth;
+	int x = mapindex % m_HeightMapWidth;
+	if (y == 255)
 	{
 		bool test = true;
 	}
-	if (z == 255)
+	if (x == 255)
 	{
 		bool test = true;
 	}
@@ -146,7 +146,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 	XMVECTOR faceNormalSix;
 	XMVECTOR faceNormalAverage;
 
-	if (x == 0 && z == 0) //top left corner
+	if (y == 0 && x == 0) //top left corner
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v2 = m_pHeightMap[mapindex + m_HeightMapWidth]; //Middle bottom
@@ -159,7 +159,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector2), XMVectorSubtract(vector2, vector3)); // Middle, middle bottom, middle right //correct
 		faceNormalAverage = faceNormalOne;
 	}
-	else if (x == 255 && z == 254) //bottom right corner
+	else if (y == 255 && x == 254) //bottom right corner
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v1 = m_pHeightMap[mapindex - m_HeightMapWidth]; //Middle top
@@ -172,7 +172,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalOne = XMVector3Cross(XMVectorSubtract(vector0, vector1), XMVectorSubtract(vector1, vector4)); // Middle, middle top, middle left //correct
 		faceNormalAverage = faceNormalOne;
 	}
-	else if (x == 0 && z == 254) //top right corner
+	else if (y == 0 && x == 254) //top right corner
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v2 = m_pHeightMap[mapindex + m_HeightMapWidth]; //Middle bottom
@@ -190,7 +190,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalAverage = faceNormalAverage / 2;
 
 	}
-	else if (x == 255 && z == 0) //bottom left corner
+	else if (y == 255 && x == 0) //bottom left corner
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v1 = m_pHeightMap[mapindex - m_HeightMapWidth]; //Middle top
@@ -207,7 +207,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalAverage = faceNormalOne + faceNormalTwo;
 		faceNormalAverage = faceNormalAverage / 2;
 	}
-	else if (z == 0) //leftside
+	else if (x == 0) //leftside
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v1 = m_pHeightMap[mapindex - m_HeightMapWidth]; //Middle top
@@ -227,7 +227,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
 		faceNormalAverage = faceNormalAverage / 3;
 	}
-	else if (z == 254) //rightside
+	else if (x == 254) //rightside
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v1 = m_pHeightMap[mapindex - m_HeightMapWidth]; //Middle top
@@ -247,7 +247,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
 		faceNormalAverage = faceNormalAverage / 3;
 	}
-	else if (x == 0) //topside
+	else if (y == 0) //topside
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v2 = m_pHeightMap[mapindex + m_HeightMapWidth]; //Middle bottom
@@ -267,7 +267,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalAverage = faceNormalOne + faceNormalTwo + faceNormalThree;
 		faceNormalAverage = faceNormalAverage / 3;
 	}
-	else if (x == 255) //bottom side
+	else if (y == 255) //bottom side
 	{
 		XMFLOAT3 v0 = m_pHeightMap[mapindex];  //Middle
 		XMFLOAT3 v1 = m_pHeightMap[mapindex - m_HeightMapWidth]; //Middle top
