@@ -89,13 +89,13 @@ bool HeightMapApplication::HandleStart()
 
 				if (y == 0)
 				{
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, averageNormalsOne);
 					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, averageNormalsTwo);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, averageNormalsOne);
 				}
 				else
 				{
-					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, averageNormalsOne);
 					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, averageNormalsTwo);
+					m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, averageNormalsOne);
 				}
 			}
 			else 
@@ -112,8 +112,8 @@ bool HeightMapApplication::HandleStart()
 				ReturnAverageNormal(mapIndex + m_HeightMapWidth, averageNormalsOne);
 				ReturnAverageNormal(mapIndex, averageNormalsTwo);
 
-				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, averageNormalsOne);
 				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v0, MAP_COLOUR, averageNormalsTwo);
+				m_pMapVtxs[vertex++] = Vertex_Pos3fColour4ubNormal3f(v1, MAP_COLOUR, averageNormalsOne);
 			}
 		}
 	}
@@ -316,7 +316,7 @@ void HeightMapApplication::ReturnAverageNormal(int mapindex, XMFLOAT3 &averageno
 		faceNormalAverage = faceNormalAverage / 6;
 	}
 
-	XMStoreFloat3(&averagenormal, faceNormalAverage);
+	XMStoreFloat3(&averagenormal, -faceNormalAverage);
 }
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -458,21 +458,33 @@ bool HeightMapApplication::LoadHeightMap(char* filename, float gridSize)
 	k = 0;
 
 	// Read the image data into the height map.
-	for(j = 0; j < m_HeightMapLength; j++)
-	{
-		for(i = 0; i < m_HeightMapWidth; i++)
-		{
+	//for(j = 0; j < m_HeightMapLength; j++)
+	//{
+	//	for(i = 0; i < m_HeightMapWidth; i++)
+	//	{
+	//		height = bitmapImage[k];
+
+	//		index = (m_HeightMapLength * j) + i;
+
+	//		m_pHeightMap[index].x = (float)(i - (m_HeightMapWidth / 2)) * gridSize;
+	//		m_pHeightMap[index].y = (float)height / 16 * gridSize;
+	//		m_pHeightMap[index].z = (float)(j - (m_HeightMapLength / 2)) * gridSize;
+
+	//		k += 3;
+	//	}
+	//}
+
+	for (j = m_HeightMapLength - 1; j >= 0; j--) {
+		for (i = 0; i < m_HeightMapWidth; i++) {
 			height = bitmapImage[k];
-
 			index = (m_HeightMapLength * j) + i;
-
 			m_pHeightMap[index].x = (float)(i - (m_HeightMapWidth / 2)) * gridSize;
 			m_pHeightMap[index].y = (float)height / 16 * gridSize;
-			m_pHeightMap[index].z = (float)(j - (m_HeightMapLength / 2)) * gridSize;
-
+			m_pHeightMap[index].z = (float)((m_HeightMapLength / 2) - j) * gridSize;
 			k += 3;
 		}
 	}
+
 
 	// Release the bitmap image data.
 	delete[] bitmapImage;
